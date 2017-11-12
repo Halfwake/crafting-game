@@ -3,6 +3,7 @@
 #include "menu.h"
 #include "callback.h"
 #include "state.h"
+#include "texture.h"
 
 int main() {
   // Initialize SDL and a rendering context.
@@ -31,6 +32,16 @@ int main() {
   SDL_RenderPresent(renderer);
   SDL_Event event;
 
+  load_textures(renderer);
+
+  // Store all the init callbacks into a state enum indexed array.
+  init_callback init_callbacks[GAME_STATE_COUNT];
+  init_callbacks[GAME_STATE_MENU] = menu_init;
+
+  // Store all the destroy callbacks into a state enum indexed array.
+  destroy_callback destroy_callbacks[GAME_STATE_COUNT];
+  destroy_callbacks[GAME_STATE_MENU] = menu_destroy;
+
   // Store all render callbacks into a state enum indexed array.
   render_callback render_callbacks[GAME_STATE_COUNT];
   render_callbacks[GAME_STATE_MENU] = menu_render;
@@ -47,7 +58,9 @@ int main() {
   struct game_state_local_data * local_state = malloc(sizeof(struct game_state_local_data));
   local_state->type  = GAME_STATE_MENU;
   local_state->tail = NULL;
+  init_callbacks[GAME_STATE_MENU](local_state);
 
+  struct game_state_local_data * old_local_state;
   struct game_state_local_data * new_state = malloc(sizeof(struct game_state_local_data));
   // The main game loop.
   while (local_state != NULL) {
@@ -61,9 +74,12 @@ int main() {
     case CALLBACK_RESPONSE_QUIT:
       exit(0);
     case CALLBACK_RESPONSE_DONE:
+      old_local_state = local_state;
       local_state = pop_state(local_state);
+      destroy_callbacks[local_state->type](old_local_state);
       continue;
     case CALLBACK_RESPONSE_CREATE:
+      init_callbacks[local_state->type](local_state);
       local_state = push_state(local_state, new_state);
       continue;
     }
@@ -74,9 +90,12 @@ int main() {
     case CALLBACK_RESPONSE_QUIT:
       exit(0);
     case CALLBACK_RESPONSE_DONE:
+      old_local_state = local_state;
       local_state = pop_state(local_state);
+      destroy_callbacks[local_state->type](old_local_state);
       continue;
     case CALLBACK_RESPONSE_CREATE:
+      init_callbacks[local_state->type](local_state);
       local_state = push_state(local_state, new_state);
       continue;
     }

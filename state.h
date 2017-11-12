@@ -1,13 +1,15 @@
 #ifndef _STATE_H
 #define _STATE_H
 
+#include "button.h"
+
 enum game_state {
   GAME_STATE_MENU,
   GAME_STATE_COUNT
 };
 
 struct menu_local_data {
-  int x_;
+  struct button * quit_button;
 };
 
 union local_data {
