@@ -48,19 +48,37 @@ int main() {
   local_state->type  = GAME_STATE_MENU;
   local_state->tail = NULL;
 
+  struct game_state_local_data * new_state = malloc(sizeof(struct game_state_local_data));
   // The main game loop.
   while (local_state != NULL) {
     SDL_RenderClear(renderer);
     render_callbacks[local_state->type](renderer, local_state->local);
     SDL_RenderPresent(renderer);
-    enum callback_response update_response = update_callbacks[local_state->type](0, &local_state->local);
-    enum callback_response event_response = (SDL_PollEvent(&event)) ?
-      event_callbacks[local_state->type](event, &local_state->local)
-      : CALLBACK_RESPONSE_CONTINUE;
-    if ((update_response == CALLBACK_RESPONSE_QUIT) || (event_response == CALLBACK_RESPONSE_QUIT)) {
+    
+    switch(update_callbacks[local_state->type](0, &local_state->local, new_state)) {
+    case CALLBACK_RESPONSE_CONTINUE:
+      break;
+    case CALLBACK_RESPONSE_QUIT:
       exit(0);
-    } else if ((update_response == CALLBACK_RESPONSE_DONE) || (event_response == CALLBACK_RESPONSE_DONE)) {
+    case CALLBACK_RESPONSE_DONE:
       local_state = pop_state(local_state);
+      continue;
+    case CALLBACK_RESPONSE_CREATE:
+      local_state = push_state(local_state, new_state);
+      continue;
+    }
+    
+    switch ((SDL_PollEvent(&event)) ? event_callbacks[local_state->type](event, &local_state->local, new_state) : CALLBACK_RESPONSE_CONTINUE) {
+    case CALLBACK_RESPONSE_CONTINUE:
+      break;
+    case CALLBACK_RESPONSE_QUIT:
+      exit(0);
+    case CALLBACK_RESPONSE_DONE:
+      local_state = pop_state(local_state);
+      continue;
+    case CALLBACK_RESPONSE_CREATE:
+      local_state = push_state(local_state, new_state);
+      continue;
     }
   }    
   
