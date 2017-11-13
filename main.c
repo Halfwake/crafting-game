@@ -11,8 +11,8 @@ int main() {
   SDL_Window * window = SDL_CreateWindow("Graphics Test",
 					 SDL_WINDOWPOS_CENTERED,
 					 SDL_WINDOWPOS_CENTERED,
-					 400,
-					 400,
+					 800,
+					 600,
 					 0);
   if (window == NULL) {
     printf("Could not open window: %s\n", SDL_GetError());

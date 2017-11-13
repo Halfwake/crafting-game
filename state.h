@@ -10,6 +10,7 @@ enum game_state {
 
 struct menu_local_data {
   struct button * quit_button;
+  struct button * new_game_button;
 };
 
 union local_data {

@@ -18,10 +18,10 @@ void button_render(SDL_Renderer * renderer, struct button * button) {
   SDL_RenderCopy(renderer, texture, NULL, button->rect);
 }
 
-bool button_is_clicked(struct button button, SDL_Event event) {
+bool button_is_clicked(struct button * button, SDL_Event event) {
   if (event.type == SDL_MOUSEBUTTONDOWN) {
     SDL_Point mouse_point = {event.button.x, event.button.y};
-    return SDL_PointInRect(&mouse_point, button.rect);
+    return SDL_PointInRect(&mouse_point, button->rect);
   } else {
     return false;
   }

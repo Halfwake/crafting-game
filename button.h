@@ -12,6 +12,6 @@ struct button {
 };
 
 void button_render(SDL_Renderer * renderer, struct button * button);
-bool button_is_clicked(struct button button, SDL_Event event);
+bool button_is_clicked(struct button * button, SDL_Event event);
 
 #endif

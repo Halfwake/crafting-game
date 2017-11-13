@@ -34,5 +34,7 @@ typedef enum callback_response (*update_callback)(int delta,
 typedef enum callback_response (*event_callback)(SDL_Event event,
 						 union local_data * local,
 						 struct game_state_local_data * new_state);
+typedef void (*init_callback)(struct game_state_local_data * new_state);
+typedef void (*destroy_callback)(struct game_state_local_data * state);
 
 #endif
