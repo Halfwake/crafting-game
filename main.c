@@ -4,6 +4,7 @@
 #include "callback.h"
 #include "state.h"
 #include "texture.h"
+#include "dialog.h"
 
 int main() {
   // Initialize SDL and a rendering context.
@@ -34,33 +35,33 @@ int main() {
 
   load_textures(renderer);
 
-  // Store all the init callbacks into a state enum indexed array.
-  init_callback init_callbacks[GAME_STATE_COUNT];
-  init_callbacks[GAME_STATE_MENU] = menu_init;
-
   // Store all the destroy callbacks into a state enum indexed array.
   destroy_callback destroy_callbacks[GAME_STATE_COUNT];
   destroy_callbacks[GAME_STATE_MENU] = menu_destroy;
-
+  destroy_callbacks[GAME_STATE_DIALOG] = dialog_destroy;
+  
   // Store all render callbacks into a state enum indexed array.
   render_callback render_callbacks[GAME_STATE_COUNT];
   render_callbacks[GAME_STATE_MENU] = menu_render;
+  render_callbacks[GAME_STATE_DIALOG] = dialog_render;
 
   // Store all update callbacks into a state enum indexed array.
   update_callback update_callbacks[GAME_STATE_COUNT];
   update_callbacks[GAME_STATE_MENU] = menu_update;
+  update_callbacks[GAME_STATE_DIALOG] = dialog_update;
   
   // Store all event callbacks into a state enum indexed array.
   event_callback event_callbacks[GAME_STATE_COUNT];
   event_callbacks[GAME_STATE_MENU] = menu_event;
+  event_callbacks[GAME_STATE_DIALOG] = dialog_event;  
 
   // Create the game state visible on startup.
   struct game_state_local_data * local_state = malloc(sizeof(struct game_state_local_data));
   local_state->type  = GAME_STATE_MENU;
   local_state->tail = NULL;
-  init_callbacks[GAME_STATE_MENU](local_state);
+  local_state->local = menu_init();
 
-  struct game_state_local_data * old_local_state;
+  struct game_state_local_data * old_local_state; // When we pop a state, we need a pointer to it so we can free it.
   struct game_state_local_data * new_state = malloc(sizeof(struct game_state_local_data));
   // The main game loop.
   while (local_state != NULL) {
@@ -68,7 +69,7 @@ int main() {
     render_callbacks[local_state->type](renderer, local_state->local);
     SDL_RenderPresent(renderer);
     
-    switch(update_callbacks[local_state->type](0, &local_state->local, new_state)) {
+    switch(update_callbacks[local_state->type](0, local_state->local, new_state)) {
     case CALLBACK_RESPONSE_CONTINUE:
       break;
     case CALLBACK_RESPONSE_QUIT:
@@ -76,15 +77,15 @@ int main() {
     case CALLBACK_RESPONSE_DONE:
       old_local_state = local_state;
       local_state = pop_state(local_state);
-      destroy_callbacks[local_state->type](old_local_state);
+      destroy_callbacks[local_state->type](old_local_state->local);
       continue;
     case CALLBACK_RESPONSE_CREATE:
-      init_callbacks[local_state->type](local_state);
       local_state = push_state(local_state, new_state);
+      new_state = malloc(sizeof(struct game_state_local_data));
       continue;
     }
     
-    switch ((SDL_PollEvent(&event)) ? event_callbacks[local_state->type](event, &local_state->local, new_state) : CALLBACK_RESPONSE_CONTINUE) {
+    switch ((SDL_PollEvent(&event)) ? event_callbacks[local_state->type](event, local_state->local, new_state) : CALLBACK_RESPONSE_CONTINUE) {
     case CALLBACK_RESPONSE_CONTINUE:
       break;
     case CALLBACK_RESPONSE_QUIT:
@@ -92,11 +93,11 @@ int main() {
     case CALLBACK_RESPONSE_DONE:
       old_local_state = local_state;
       local_state = pop_state(local_state);
-      destroy_callbacks[local_state->type](old_local_state);
+      destroy_callbacks[local_state->type](old_local_state->local);
       continue;
     case CALLBACK_RESPONSE_CREATE:
-      init_callbacks[local_state->type](local_state);
       local_state = push_state(local_state, new_state);
+      new_state = malloc(sizeof(struct game_state_local_data));
       continue;
     }
   }    

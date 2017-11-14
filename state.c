@@ -10,5 +10,5 @@ struct game_state_local_data * pop_state(struct game_state_local_data * state) {
 
 struct game_state_local_data * push_state(struct game_state_local_data * head, struct game_state_local_data * new) {
   new->tail = head;
-  return head;
+  return new;
 }

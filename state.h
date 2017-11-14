@@ -5,6 +5,7 @@
 
 enum game_state {
   GAME_STATE_MENU,
+  GAME_STATE_DIALOG,
   GAME_STATE_COUNT
 };
 
@@ -13,14 +14,21 @@ struct menu_local_data {
   struct button * new_game_button;
 };
 
+struct dialog_local_data {
+  char ** choices;
+  size_t choice_count;
+  struct button * buttons;
+};
+
 union local_data {
   struct menu_local_data menu;
+  struct dialog_local_data dialog;
 };
 
 struct game_state_local_data {
   enum game_state type;
   struct game_state_local_data * tail;
-  union local_data local;
+  union local_data * local;
 };
 
 struct game_state_local_data * pop_state(struct game_state_local_data * state);

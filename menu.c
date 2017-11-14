@@ -7,10 +7,11 @@
 #include "state.h"
 #include "button.h"
 #include "texture.h"
+#include "dialog.h"
 
-void menu_render(SDL_Renderer * renderer, union local_data local) {
-  button_render(renderer, local.menu.quit_button);
-  button_render(renderer, local.menu.new_game_button);
+void menu_render(SDL_Renderer * renderer, union local_data * local) {
+  button_render(renderer, local->menu.quit_button);
+  button_render(renderer, local->menu.new_game_button);
 }
 
 enum callback_response menu_update(int delta, union local_data * local, struct game_state_local_data * new_state) {
@@ -18,16 +19,18 @@ enum callback_response menu_update(int delta, union local_data * local, struct g
 }
 
 enum callback_response menu_event(SDL_Event event, union local_data * local, struct game_state_local_data * new_state) {
-  if (event.type == SDL_QUIT) {
-    return CALLBACK_RESPONSE_QUIT;
-  } else if (button_is_clicked(local->menu.quit_button, event)) {
-    return CALLBACK_RESPONSE_QUIT;
+  if (event.type == SDL_QUIT || button_is_clicked(local->menu.quit_button, event)) {
+    char * choices[] = { "Yes", "No" };
+    new_state->local = dialog_init(choices, 2);
+    new_state->type = GAME_STATE_DIALOG;
+    return CALLBACK_RESPONSE_CREATE;
   } else {
     return CALLBACK_RESPONSE_CONTINUE;
   }
 }
 
-void menu_init(struct game_state_local_data * new_state) {
+union local_data * menu_init() {
+  union local_data * local = malloc(sizeof(union local_data));
   struct button * button = malloc(sizeof(struct button));
   button->hover = TEXTURES[BUTTON_HOVER];
   button->neutral = TEXTURES[BUTTON_NEUTRAL];
@@ -37,7 +40,7 @@ void menu_init(struct game_state_local_data * new_state) {
   rect->x = 400 - (rect->w / 2);
   rect->y = 400 - (rect->h / 2);
   button->rect = rect;
-  new_state->local.menu.quit_button = button;
+  local->menu.quit_button = button;
 
   button = malloc(sizeof(struct button));
   button->hover = TEXTURES[BUTTON_HOVER];
@@ -48,9 +51,11 @@ void menu_init(struct game_state_local_data * new_state) {
   rect->x = 400 - (rect->w / 2);
   rect->y = 300 - (rect->h / 2);
   button->rect = rect;
-  new_state->local.menu.new_game_button = button;
+  local->menu.new_game_button = button;
+
+  return local;
 }
 
-void menu_destroy(struct game_state_local_data * state) {
+void menu_destroy(union local_data  * state) {
   
 }

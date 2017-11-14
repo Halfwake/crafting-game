@@ -6,10 +6,10 @@
 #include "callback.h"
 #include "state.h"
 
-void menu_render(SDL_Renderer * renderer, union local_data local);
+void menu_render(SDL_Renderer * renderer, union local_data * local);
 enum callback_response menu_update(int delta, union local_data * local, struct game_state_local_data * new_state);
 enum callback_response menu_event(SDL_Event event, union local_data * local, struct game_state_local_data * new_state);
-void menu_init(struct game_state_local_data * new_state);
-void menu_destroy(struct game_state_local_data * state);
+union local_data * menu_init();
+void menu_destroy(union local_data * local);
 
 #endif
