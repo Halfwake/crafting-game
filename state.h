@@ -2,6 +2,7 @@
 #define _STATE_H
 
 #include "button.h"
+#include "SDL2/SDL.h"
 
 enum game_state {
   GAME_STATE_MENU,
@@ -28,6 +29,7 @@ union local_data {
 struct game_state_local_data {
   enum game_state type;
   struct game_state_local_data * tail;
+  SDL_Texture * previous_texture;
   union local_data * local;
 };
 

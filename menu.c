@@ -9,21 +9,22 @@
 #include "texture.h"
 #include "dialog.h"
 
-void menu_render(SDL_Renderer * renderer, union local_data * local) {
+void menu_render(SDL_Renderer * renderer, SDL_Texture * previous_texture, union local_data * local) {
   button_render(renderer, local->menu.quit_button);
   button_render(renderer, local->menu.new_game_button);
 }
 
 enum callback_response menu_update(int delta, union local_data * local, struct game_state_local_data * new_state) {
-  return CALLBACK_RESPONSE_CONTINUE;
-}
-
-enum callback_response menu_event(SDL_Event event, union local_data * local, struct game_state_local_data * new_state) {
-  if (event.type == SDL_QUIT || button_is_clicked(local->menu.quit_button, event)) {
-    char * choices[] = { "Yes", "No" };
-    new_state->local = dialog_init(choices, 2);
-    new_state->type = GAME_STATE_DIALOG;
-    return CALLBACK_RESPONSE_CREATE;
+  SDL_Event event;
+  if (SDL_PollEvent(&event)) {
+    if (event.type == SDL_QUIT || button_is_clicked(local->menu.quit_button, event)) {
+      char * choices[] = { "Yes", "No" };
+      new_state->local = dialog_init(choices, 2);
+      new_state->type = GAME_STATE_DIALOG;
+      return CALLBACK_RESPONSE_CREATE;
+    } else {
+      return CALLBACK_RESPONSE_CONTINUE;
+    }
   } else {
     return CALLBACK_RESPONSE_CONTINUE;
   }
