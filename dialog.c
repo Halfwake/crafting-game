@@ -10,11 +10,7 @@
 
 
 void dialog_render(SDL_Renderer * renderer, SDL_Texture * previous_texture, union local_data * local) {
-  static bool previous_texture_modified = false;
-  if (!previous_texture_modified) {
-    SDL_SetTextureColorMod(previous_texture, 64, 64, 64);
-    previous_texture_modified = true;
-  }
+  SDL_SetTextureColorMod(previous_texture, 64, 64, 64);
   SDL_RenderCopy(renderer, previous_texture, NULL, NULL);
   for (int i = 0; i < local->dialog.choice_count; i++) {
     button_render(renderer, local->dialog.buttons + i);
