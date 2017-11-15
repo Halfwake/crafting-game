@@ -29,10 +29,11 @@ enum callback_response {
 typedef void (*render_callback)(SDL_Renderer * renderer,
 				SDL_Texture * previous_texture,
 				union local_data * local);
-typedef enum callback_response (*update_callback)(int delta,
+typedef enum callback_response (*update_callback)(SDL_Renderer * renderer,
+						  int delta,
 						  union local_data * local,
 						  struct game_state_local_data * new_state);
-typedef void (*init_callback)(union local_data * local);
+typedef void (*init_callback)(SDL_Renderer * renderer);			      
 typedef void (*destroy_callback)(union local_data * local);
 
 #endif

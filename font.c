@@ -1,6 +1,7 @@
 #include "font.h"
 
-#include <SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 TTF_Font * FONTS[FONT_COUNT];
 
@@ -15,4 +16,11 @@ void load_fonts() {
 		      "Could not open font: %s", file_names[i]);
     }
   }
+}
+
+SDL_Texture * render_text(char * text, TTF_Font * font, SDL_Color color, SDL_Renderer * renderer) {
+  SDL_Surface * text_surface = TTF_RenderText_Solid(font, text, color);
+  SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+  SDL_FreeSurface(text_surface);
+  return texture;
 }

@@ -18,7 +18,7 @@ struct menu_local_data {
 struct dialog_local_data {
   char ** choices;
   size_t choice_count;
-  struct button * buttons;
+  struct button ** buttons;
 };
 
 union local_data {

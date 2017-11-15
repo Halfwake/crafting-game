@@ -6,6 +6,7 @@
 #include "state.h"
 #include "texture.h"
 #include "dialog.h"
+#include "font.h"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -50,6 +51,7 @@ int main() {
   SDL_RenderPresent(renderer);
 
   load_textures(renderer);
+  load_fonts();
 
   // Store all the destroy callbacks into a state enum indexed array.
   destroy_callback destroy_callbacks[GAME_STATE_COUNT];
@@ -70,7 +72,7 @@ int main() {
   struct game_state_local_data * local_state = malloc(sizeof(struct game_state_local_data));
   local_state->type  = GAME_STATE_MENU;
   local_state->tail = NULL;
-  local_state->local = menu_init();
+  local_state->local = menu_init(renderer);
 
   struct game_state_local_data * old_local_state; // When we pop a state, we need a pointer to it so we can free it.
   struct game_state_local_data * new_state = malloc(sizeof(struct game_state_local_data));
@@ -85,7 +87,7 @@ int main() {
     render_callbacks[local_state->type](renderer, local_state->previous_texture, local_state->local);
     SDL_RenderPresent(renderer);
     
-    switch(update_callbacks[local_state->type](0, local_state->local, new_state)) {
+    switch(update_callbacks[local_state->type](renderer, 0, local_state->local, new_state)) {
     case CALLBACK_RESPONSE_CONTINUE:
       break;
     case CALLBACK_RESPONSE_QUIT:
