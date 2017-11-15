@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "menu.h"
 #include "callback.h"
@@ -10,8 +11,19 @@
 #define SCREEN_HEIGHT 600
 
 int main() {
-  // Initialize SDL and a rendering context.
-  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+  // Initialize SDL and related libraries.
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+    SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION,
+		    "Could not init SDL: %s", SDL_GetError());
+    return 1;
+  }
+  if (TTF_Init() < 0) {
+    SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION,
+		    "Could not init TTF: %s", TTF_GetError());
+    return 1;
+  }
+
+  // Create a rendering context.
   SDL_Window * window = SDL_CreateWindow("Graphics Test",
 					 SDL_WINDOWPOS_CENTERED,
 					 SDL_WINDOWPOS_CENTERED,
@@ -19,14 +31,16 @@ int main() {
 					 SCREEN_HEIGHT,
 					 0);
   if (window == NULL) {
-    printf("Could not open window: %s\n", SDL_GetError());
+    SDL_LogCritical(SDL_LOG_CATEGORY_VIDEO,
+		    "Could not open window: %s\n", SDL_GetError());
     return 1;
   }
   SDL_Renderer * renderer =  SDL_CreateRenderer(window,
 						-1,
 						SDL_RENDERER_TARGETTEXTURE);
   if (renderer == NULL) {
-    printf("Could not create renderer: %s\n", SDL_GetError());
+    SDL_LogCritical(SDL_LOG_CATEGORY_VIDEO,
+		    "Could not create renderer: %s\n", SDL_GetError());
   }
 
 
@@ -105,6 +119,7 @@ int main() {
   // Clean Up Resources.
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
+  TTF_Quit();
   SDL_Quit();
   return 0;
 }

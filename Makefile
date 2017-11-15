@@ -1,7 +1,7 @@
 CFLAGS = -Wall -g -std=c99
 
 main: main.c menu.o callback.o state.o button.o texture.o dialog.o
-	gcc $(CFLAGS) main.c menu.o callback.o state.o button.o texture.o dialog.o -o main -lSDL2
+	gcc $(CFLAGS) main.c menu.o callback.o state.o button.o texture.o dialog.o -o main -lSDL2 -lSDL2_ttf-2.0
 
 menu.o: menu.c menu.h
 	gcc $(CFLAGS) -c menu.c
@@ -20,3 +20,6 @@ texture.o: texture.c texture.h
 
 dialog.o: dialog.c dialog.h
 	gcc $(CFLAGS) -c dialog.c
+
+font.o: font.c font.h
+	gcc $(CFLAGS) -c font.c
