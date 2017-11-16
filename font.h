@@ -5,6 +5,7 @@
 
 enum font_id {
   FONT_FREE_MONO_16,
+  FONT_FREE_MONO_32,
   FONT_COUNT
 };
 

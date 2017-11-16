@@ -10,6 +10,8 @@ void load_fonts() {
   int font_size[FONT_COUNT];
   file_names[FONT_FREE_MONO_16] = "/usr/share/fonts/truetype/freefont/FreeMono.ttf";
   font_size[FONT_FREE_MONO_16] = 16;
+  file_names[FONT_FREE_MONO_32] = "/usr/share/fonts/truetype/freefont/FreeMono.ttf";
+  font_size[FONT_FREE_MONO_32] = 32;
   for (int i = 0; i < FONT_COUNT; i++) {
     if (!(FONTS[FONT_FREE_MONO_16] = TTF_OpenFont(file_names[i], font_size[i]))) {
       SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION,
