@@ -11,7 +11,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 
-int main() {
+int main(int argc, char * argv[]) {
   // Initialize SDL and related libraries.
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
     SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION,
