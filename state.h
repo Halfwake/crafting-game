@@ -6,7 +6,7 @@
 
 enum game_state {
   GAME_STATE_MENU,
-  GAME_STATE_DIALOG,
+  GAME_STATE_POPUP,
   GAME_STATE_COUNT
 };
 
@@ -15,7 +15,7 @@ struct menu_local_data {
   struct button * new_game_button;
 };
 
-struct dialog_local_data {
+struct popup_local_data {
   char ** choices;
   size_t choice_count;
   struct button ** buttons;
@@ -23,7 +23,7 @@ struct dialog_local_data {
 
 union local_data {
   struct menu_local_data menu;
-  struct dialog_local_data dialog;
+  struct popup_local_data popup;
 };
 
 struct game_state_local_data {

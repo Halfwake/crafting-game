@@ -5,7 +5,7 @@
 #include "callback.h"
 #include "state.h"
 #include "texture.h"
-#include "dialog.h"
+#include "popup.h"
 #include "font.h"
 
 #define SCREEN_WIDTH 800
@@ -56,17 +56,17 @@ int main(int argc, char * argv[]) {
   // Store all the destroy callbacks into a state enum indexed array.
   destroy_callback destroy_callbacks[GAME_STATE_COUNT];
   destroy_callbacks[GAME_STATE_MENU] = menu_destroy;
-  destroy_callbacks[GAME_STATE_DIALOG] = dialog_destroy;
+  destroy_callbacks[GAME_STATE_POPUP] = popup_destroy;
   
   // Store all render callbacks into a state enum indexed array.
   render_callback render_callbacks[GAME_STATE_COUNT];
   render_callbacks[GAME_STATE_MENU] = menu_render;
-  render_callbacks[GAME_STATE_DIALOG] = dialog_render;
+  render_callbacks[GAME_STATE_POPUP] = popup_render;
 
   // Store all update callbacks into a state enum indexed array.
   update_callback update_callbacks[GAME_STATE_COUNT];
   update_callbacks[GAME_STATE_MENU] = menu_update;
-  update_callbacks[GAME_STATE_DIALOG] = dialog_update;
+  update_callbacks[GAME_STATE_POPUP] = popup_update;
   
   // Create the game state visible on startup.
   struct game_state_local_data * local_state = malloc(sizeof(struct game_state_local_data));

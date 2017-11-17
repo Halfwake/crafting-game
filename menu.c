@@ -7,7 +7,7 @@
 #include "state.h"
 #include "button.h"
 #include "texture.h"
-#include "dialog.h"
+#include "popup.h"
 
 void menu_render(SDL_Renderer * renderer, SDL_Texture * previous_texture, union local_data * local) {
   button_render(renderer, local->menu.quit_button);
@@ -19,8 +19,8 @@ enum callback_response menu_update(SDL_Renderer * renderer, int delta, union loc
   if (SDL_PollEvent(&event)) {
     if (event.type == SDL_QUIT || button_is_clicked(local->menu.quit_button, event)) {
       char * choices[] = { "Yes", "No" };
-      new_state->local = dialog_init(renderer, choices, 2);
-      new_state->type = GAME_STATE_DIALOG;
+      new_state->local = popup_init(renderer, choices, 2);
+      new_state->type = GAME_STATE_POPUP;
       return CALLBACK_RESPONSE_CREATE;
     } else {
       return CALLBACK_RESPONSE_CONTINUE;
